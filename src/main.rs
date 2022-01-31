@@ -113,7 +113,7 @@ fn main() {
 
             if regex.is_match(&filename) {
                 last_update = Local.ymd(mail_date.year as i32, mail_date.month, mail_date.day)
-                    .and_hms(mail_date.hour, mail_date.minute, mail_date.second) + Duration::hours(9);
+                    .and_hms(mail_date.hour, mail_date.minute, mail_date.second);
                 
                 if !Path::new(tmp_dir).is_dir() {
                     std::fs::create_dir(tmp_dir).unwrap();
