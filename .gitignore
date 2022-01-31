@@ -1,0 +1,6 @@
+/target
+Cargo.lock
+.DS_Store
+Thumbs.db
+.Trashes/
+.Spotlight_V100
