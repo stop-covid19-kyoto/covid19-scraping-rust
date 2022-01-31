@@ -4,3 +4,4 @@ Cargo.lock
 Thumbs.db
 .Trashes/
 .Spotlight_V100
+.secrets

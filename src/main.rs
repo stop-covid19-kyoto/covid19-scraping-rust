@@ -79,10 +79,10 @@ fn main() {
     let mut last_update: DateTime<Local> = Local::now();
     
     // メールボックスの内容を読み込む
-    let result = imap_session.search(["SENTSINCE ", &last_update.format("%e-%b-%Y ").
-        to_string().
-        to_uppercase(), &args.query].
-        concat())
+    println!("{}", &last_update.format("%d-%b-%Y "));
+    let result = imap_session.search(["SENTSINCE ", &last_update.format("\"%d-%b-%Y\" ").
+        to_string(), &args.query]
+        .concat())
         .unwrap();
     let mut result_vec: Vec<u32> = Vec::new();
 
