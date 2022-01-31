@@ -1,0 +1,32 @@
+name: Deploy new data
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [update_data]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: download covid19-scraping-rust
+      run: |
+        curl -LO https://github.com/stop-covid19-kyoto/covid19-scraping-rust/releases/download/v1.0.0/covid19-scraping-rust-linux-x86_64.tar.gz
+        tar -zxvf covid19-scraping-rust-linux-x86_64.tar.gz
+    - name: Run scraping tool
+      env:
+        SERVER: ${{ secrets.SERVER }}
+        PORT: ${{ secrets.PORT }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+        QUERY: ${{ secrets.QUERY }}
+        MY_ADDR:  ${{ secrets.MY_ADDR }}
+      run: |
+        TZ="Asia/Tokyo" ./covid19-scraping-rust --server ${SERVER} --port ${PORT} --account ${MY_ADDR} --password ${PASSWORD} --query ${QUERY}
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./data
+        publish_branch: gh-pages
+        allow_empty_commit: false
