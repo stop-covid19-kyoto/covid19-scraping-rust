@@ -5,7 +5,6 @@ mod utils;
 use regex::Regex;
 use std::path::Path;
 use clap::Parser;
-use chrono::Duration;
 use chrono::TimeZone;
 use mail_parser::MimeHeaders;
 use mail_parser::Message;
