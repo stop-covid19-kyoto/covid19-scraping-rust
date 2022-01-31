@@ -163,7 +163,7 @@ fn main() {
                 patients = patients_generate(range.clone());
     
                 println!("Generating jsonized patients data...");
-                let jsonize_patients: String = jsonize_patients_generate(patients.clone());
+                let jsonize_patients: String = jsonize_patients_generate(patients.clone(), last_update);
 
                 let mut patients_date: Vec<DateTime<Utc>> = Vec::new();
     

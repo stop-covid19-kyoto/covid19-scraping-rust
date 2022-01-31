@@ -1,15 +1,16 @@
+use chrono::DateTime;
 use crate::Patient;
 use crate::utils::date_format::{convert_datetime_to_date_and_time, convert_utc_to_date};
 use crate::utils::merge_age_and_gender::merge_age_and_gender;
 use chrono::{Local, SecondsFormat};
 use crate::structs::json::{jsonize_patient::JsonizePatient, patients::Patients};
 
-pub fn jsonize_patients_generate(patients: Vec<Patient>) -> String {
+pub fn jsonize_patients_generate(patients: Vec<Patient>, last_update: DateTime<Local>) -> String {
 
     // JSONにシリアライズする形態の構造体を生成
     let mut serialize_patients: Patients = Patients {
         data: Vec::new(),
-        last_update: convert_datetime_to_date_and_time(Local::now())
+        last_update: convert_datetime_to_date_and_time(last_update)
     };
 
     let patients_length: usize = patients.len();
