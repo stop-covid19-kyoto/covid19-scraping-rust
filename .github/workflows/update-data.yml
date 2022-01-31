@@ -19,10 +19,9 @@ jobs:
         SERVER: ${{ secrets.SERVER }}
         PORT: ${{ secrets.PORT }}
         PASSWORD: ${{ secrets.PASSWORD }}
-        QUERY: ${{ secrets.QUERY }}
+        KYOTO_ADDR: ${{ secrets.KYOTO_ADDR }}
         MY_ADDR:  ${{ secrets.MY_ADDR }}
-      run: |
-        TZ="Asia/Tokyo" ./covid19-scraping-rust --server ${SERVER} --port ${PORT} --account ${MY_ADDR} --password ${PASSWORD} --query ${QUERY}
+      run: TZ="Asia/Tokyo" ./covid19-scraping-rust --server ${SERVER} --port ${PORT} --account ${MY_ADDR} --password ${PASSWORD} --query "FROM ${KYOTO_ADDR} OR FROM ${MY_ADDR} X-GM-RAW \"has:attachment\""
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
