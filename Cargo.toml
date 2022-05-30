@@ -12,6 +12,7 @@ chrono = "0.4.19"
 imap = "2.4.1"
 mail-parser = "0.4.4"
 native-tls = "0.2.8"
+oauth2 = "4.2.0"
 openssl = { version = "0.10", features = ["vendored"] }
 regex = "1.5"
 serde = "1.0"

@@ -10,6 +10,20 @@ use mail_parser::MimeHeaders;
 use mail_parser::Message;
 use crate::utils::date_format::convert_datetime_to_date_and_time;
 use chrono::{DateTime, Local, Utc};
+use oauth2::{
+    AuthUrl,
+    ClientId,
+    ClientSecret,
+    basic::{
+        BasicClient
+    },
+    reqwest::{
+        http_client
+    },
+    RefreshToken,
+    TokenResponse,
+    TokenUrl
+};
 use std::io::{Write};
 use std::fs::{File};
 
@@ -48,9 +62,32 @@ struct Args {
     #[clap(long)]
     account: String,
     #[clap(long)]
-    password: String,
+    auth_url: String,
+    #[clap(long)]
+    token_url: String,
+    #[clap(long)]
+    client_id: String,
+    #[clap(long)]
+    client_secret: String,
+    #[clap(long)]
+    refresh_token: String,
     #[clap(long)]
     query: String
+}
+
+struct OAuth2 {
+    user: String,
+    access_token: String,
+}
+
+impl imap::Authenticator for OAuth2 {
+    type Response = String;
+    fn process(&self, _: &[u8]) -> Self::Response {
+        format!(
+            "user={}\x01auth=Bearer {}\x01\x01",
+            self.user, self.access_token
+        )
+    }
 }
 
 fn main() {
@@ -61,15 +98,38 @@ fn main() {
     let args = Args::parse();
 
     println!("Fetching workbook from mail server...");
+
+    let oauth2_client = BasicClient::new(
+        ClientId::new(args.client_id.to_string()),
+        Some(ClientSecret::new(args.client_secret.clone())),
+        AuthUrl::new(args.auth_url).unwrap(),
+        Some(TokenUrl::new(args.token_url.clone()).unwrap())
+    );
+    let token_result = oauth2_client
+        .exchange_refresh_token(&RefreshToken::new(args.refresh_token.clone()))
+        .request(http_client)
+        .expect("Failed to request an access token.");
+
     // TLSコネクタを作成
     let tls = native_tls::TlsConnector::builder().build().unwrap();
     // クライアントを作成
-    let client = imap::connect((args.server.to_string(), args.port), args.server.to_string(), &tls)
+    let client = imap::connect((args.server.clone(), args.port), args.server.clone(), &tls)
         .unwrap();
     // IMAPサーバへログイン
-    let mut imap_session = client.
-        login(args.account.to_string(), args.password.to_string())
-        .unwrap();
+    let auth = OAuth2 {
+        user: args.account,
+        access_token: token_result.access_token().secret().clone()
+    };
+
+    let mut imap_session = match client.authenticate("XOAUTH2", &auth) {
+        Ok(c) => c,
+        #[allow(unused_variables)]
+        Err((e, unauthorized_client)) => {
+            eprintln!("Authentication is failed: {}", e);
+            return;
+        }
+    };
+
     //メールボックスを選択する
     imap_session.select("INBOX").unwrap();
 
