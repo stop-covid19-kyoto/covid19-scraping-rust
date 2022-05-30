@@ -18,7 +18,11 @@ jobs:
       env:
         SERVER: ${{ secrets.SERVER }}
         PORT: ${{ secrets.PORT }}
-        PASSWORD: ${{ secrets.PASSWORD }}
+        AUTH_URL: ${{ secrets.AUTH_URL }}
+        TOKEN_URL: ${{ secrets.TOKEN_URL }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         KYOTO_ADDR: ${{ secrets.KYOTO_ADDR }}
         MY_ADDR:  ${{ secrets.MY_ADDR }}
       run: TZ="Asia/Tokyo" ./covid19-scraping-rust --server ${SERVER} --port ${PORT} --account ${MY_ADDR} --auth-url ${AUTH_URL} --token-url ${TOKEN_URL} --client-id ${CLIENT_ID} --client-secret ${CLIENT_SECRET} --refresh-token ${REFRESH_TOKEN} --query "OR FROM ${KYOTO_ADDR} OR FROM ${MY_ADDR} X-GM-RAW \"has:attachment\""
