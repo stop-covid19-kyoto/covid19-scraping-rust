@@ -24,8 +24,10 @@ jobs:
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         KYOTO_ADDR: ${{ secrets.KYOTO_ADDR }}
+        KYOTO_ADDR_2: ${{ secrets.KYOTO_ADDR }}
+        KYOTO_ADDR_3: ${{ secrets.KYOTO_ADDR }}
         MY_ADDR:  ${{ secrets.MY_ADDR }}
-      run: TZ="Asia/Tokyo" ./covid19-scraping-rust --server ${SERVER} --port ${PORT} --account ${MY_ADDR} --auth-url ${AUTH_URL} --token-url ${TOKEN_URL} --client-id ${CLIENT_ID} --client-secret ${CLIENT_SECRET} --refresh-token ${REFRESH_TOKEN} --query "OR FROM ${KYOTO_ADDR} OR FROM ${MY_ADDR} X-GM-RAW \"has:attachment\""
+      run: TZ="Asia/Tokyo" ./covid19-scraping-rust --server ${SERVER} --port ${PORT} --account ${MY_ADDR} --auth-url ${AUTH_URL} --token-url ${TOKEN_URL} --client-id ${CLIENT_ID} --client-secret ${CLIENT_SECRET} --refresh-token ${REFRESH_TOKEN} --query "OR FROM ${KYOTO_ADDR} OR FROM ${MY_ADDR} OR FROM ${KYOTO_ADDR_2} OR FROM ${KYOTO_ADDR_3} X-GM-RAW \"has:attachment\""
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
